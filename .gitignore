@@ -1,0 +1,15 @@
+*.pyc
+*~
+*.swp
+# task_management/dev.py
+!task_app/migrations/
+task_app/migrations/*
+static/*
+.idea
+.iml
+.project
+.pydevproject
+.metadata/
+.settings/
+.DS_Store
+**/.DS_Store
