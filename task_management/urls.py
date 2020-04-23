@@ -16,10 +16,12 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
-from task_app.views import ProjectView, ProjectDetailsView, TaskView, TaskDetailsView
+from task_app.views import ProjectView, ProjectDetailsView, TaskView, TaskDetailsView, UserList
 
 urlpatterns = [
 	url(r'^admin/', admin.site.urls),
+
+	url(r'^api/v1/users/', UserList.as_view(), name='user_list'),
 
 	url(r'^api/v1/project/(?P<project_id>\d+)/', ProjectDetailsView.as_view(), name='project_details'),
 	url(r'^api/v1/project/', ProjectView.as_view(), name='project'),

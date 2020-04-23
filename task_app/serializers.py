@@ -3,6 +3,12 @@ from rest_framework import serializers
 from .models import Projects, Tasks
 from django.contrib.auth.models import User
 
+class UserSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = User
+		fields = ("id", "first_name", "last_name")
+
+
 class ProjectSerializer(serializers.ModelSerializer):
 	name = serializers.CharField(required=True, allow_blank=False, max_length=250)
 	description = serializers.CharField(required=True, allow_blank=False)
@@ -23,6 +29,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 class ProjectTaskSerializer(serializers.ModelSerializer):
 	subtasks = serializers.SerializerMethodField()
+	asigned_to = UserSerializer()
 
 	def get_subtasks(self, task):
 		qs = Tasks.objects.filter(parent_task=task.id, project=task.project)
@@ -31,7 +38,7 @@ class ProjectTaskSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Tasks
-		fields = ("id", "project", "name", "description", "start_date", "end_date", "asigned_to", "subtasks")
+		fields = ("id", "project", "name", "description", "start_date", "end_date", "asigned_to", "subtasks", "completed")
 
 
 class ProjectDetailsSerializer(serializers.ModelSerializer):

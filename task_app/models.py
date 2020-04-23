@@ -28,6 +28,7 @@ class Tasks(models.Model):
 	end_date = models.DateField(default=datetime.now)
 	asigned_to = models.ForeignKey(User, on_delete=models.CASCADE)
 	parent_task = models.BigIntegerField(default=0)
+	completed = models.BooleanField(default=False)
 
 	class Meta:
 		db_table = 'tasks'

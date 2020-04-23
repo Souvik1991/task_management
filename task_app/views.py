@@ -11,16 +11,25 @@ from rest_framework.permissions import AllowAny
 # from rest_framework.exceptions import APIException
 
 from .models import Projects, Tasks
-from .serializers import ProjectSerializer, ProjectDetailsSerializer, TaskSerializer, TaskDetailsSerializer, ProjectTaskSerializer
+from django.contrib.auth.models import User
+from .serializers import ProjectSerializer, ProjectDetailsSerializer, TaskSerializer, TaskDetailsSerializer, ProjectTaskSerializer, UserSerializer
 
 # Create your views here.
+class UserList(APIView):
+	permission_classes = (AllowAny,)
+	def get(self, request):
+		data = User.objects.all().order_by('-id')
+		serializer = UserSerializer(data, many=True)
+		return Response(serializer.data)
+
+
 class ProjectView(APIView):
 	permission_classes = (AllowAny,)
 	serializer_class = ProjectSerializer
 	# Get all projects
 	def get(self, request):
 		# print 1
-		data = Projects.objects.all()
+		data = Projects.objects.all().order_by('-id')
 		serializer = ProjectSerializer(data, many=True)
 		return Response(serializer.data)
 
@@ -114,6 +123,21 @@ class TaskDetailsView(APIView):
 		serializer = ProjectTaskSerializer(task)
 		return Response(serializer.data)
 
+	# Toogle task is comepleted or not
+	def post(self, request, project_id, task_id):
+		task = self.get_task(project_id, task_id)
+		task.completed = not task.completed
+		task.save();
+
+		# print task
+		sub_tasks = Tasks.objects.filter(parent_task=task_id)
+		# print sub_tasks
+		for st in sub_tasks:
+			st.completed = task.completed
+			st.save()
+
+		return Response({"status": True})
+
 	# Update data of an exising task
 	def put(self, request, project_id, task_id):
 		task = self.get_task(project_id, task_id)
@@ -127,5 +151,10 @@ class TaskDetailsView(APIView):
 	def delete(self, request, project_id, task_id):
 		task = self.get_task(project_id, task_id)
 		task.delete()
+
+		sub_tasks = Tasks.objects.filter(parent_task=task_id)
+		for st in sub_tasks:
+			st.delete()
+			
 		return Response({"status": True}) 
 
