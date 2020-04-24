@@ -20,7 +20,7 @@ DATABASES = {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
 		'NAME': 'task_management',
 		'USER': 'souvik', #Replace it before you start
-		'PASSWORD': 'almond123', #Replace it before you start
+		'PASSWORD': '1234', #Replace it before you start
 		'HOST': '127.0.0.1',
 		'PORT': ''
 	}
